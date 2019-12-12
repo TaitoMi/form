@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/form/static/css/main.698818f9.chunk.css",
+    "main.js": "/form/static/js/main.0efc6051.chunk.js",
+    "main.js.map": "/form/static/js/main.0efc6051.chunk.js.map",
+    "runtime-main.js": "/form/static/js/runtime-main.a35d1ccf.js",
+    "runtime-main.js.map": "/form/static/js/runtime-main.a35d1ccf.js.map",
+    "static/css/2.f4d50da8.chunk.css": "/form/static/css/2.f4d50da8.chunk.css",
+    "static/js/2.389542af.chunk.js": "/form/static/js/2.389542af.chunk.js",
+    "static/js/2.389542af.chunk.js.map": "/form/static/js/2.389542af.chunk.js.map",
+    "index.html": "/form/index.html",
+    "precache-manifest.f2d67b6a168ee28bd8ae3990773e429f.js": "/form/precache-manifest.f2d67b6a168ee28bd8ae3990773e429f.js",
+    "service-worker.js": "/form/service-worker.js",
+    "static/css/2.f4d50da8.chunk.css.map": "/form/static/css/2.f4d50da8.chunk.css.map",
+    "static/css/main.698818f9.chunk.css.map": "/form/static/css/main.698818f9.chunk.css.map",
+    "static/media/finished.mp3": "/form/static/media/finished.268d8234.mp3"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a35d1ccf.js",
+    "static/css/2.f4d50da8.chunk.css",
+    "static/js/2.389542af.chunk.js",
+    "static/css/main.698818f9.chunk.css",
+    "static/js/main.0efc6051.chunk.js"
+  ]
+}
