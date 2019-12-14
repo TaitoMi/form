@@ -11,8 +11,23 @@ class App extends React.Component {
     super(props);
     this.state = {
       isTimer: true,
+      renderedResponse: '',
     };
   }
+
+  componentDidMount() {
+    this.getResponse().then(res => {
+      const someData = res;
+      this.setState({ renderedResponse: someData });
+    });
+  }
+
+  getResponse = async () => {
+    const response = await fetch('api/hello');
+    const body = await response.json();
+    if (response.status !== 200) throw Error(body.message);
+    return body;
+  };
 
   toCountdown = () => {
     const { isTimer } = this.state;
@@ -20,9 +35,11 @@ class App extends React.Component {
   };
 
   render() {
-    const { isTimer } = this.state;
+    const { isTimer, renderedResponse } = this.state;
     return (
       <div className="app">
+        <h2>Call out to API!</h2>
+        <p>{renderedResponse.express}</p>
         <Tabs defaultActiveKey="1" onChange={this.toCountdown}>
           <Tabs.TabPane
             className="app__tab"
