@@ -2,81 +2,50 @@
 	position: relative;
 }
 
-.app {
+.form {
 	background-color: #fff;
-	width: 400px;
+	width: 500px;
 	height: auto;
-	padding: 10px 15px 20px;
+	padding: 20px;
 	position: absolute;
 	margin-top: 10vh;
 	left: 50%;
 	transform: translateX(-50%);
 	box-shadow: 4px 4px 20px 2px rgb(73, 139, 226);
 	display: flex;
-	justify-content: center;
-	@media screen and (max-width: 700px) {
-		width: 100vw;
-		margin-top: 0.5vh;
-	}
-	&__tab {
+	flex-direction: column;
+	font-size: 20px;
+	&__row {
 		display: flex;
-		justify-content: center;
 	}
-}
-
-.countdown {
-	width: 350px;
-	&__changers {
+	&__label {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 150px;
+		margin-bottom: 15px;
+	}
+	&__skills {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-    width: 65%;
-	}
-	&__slider {
-		width: 90%;
-	}
-	&__btns {
-		display: flex;
-	}
-	&__inputs {
-		display: flex;
 		width: 100%;
-		justify-content: center;
+		.form__input {
+			margin-bottom: 10px;
+		}
 	}
-	&__time {
-		margin: 0 5px;
-		width: 50px;
-	}
-}
-
-.timer {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	width: 400px;
-	&__count {
-		font-size: 50px;
-		width: 350px;
-		display: flex;
-		justify-content: center;
-	}
-	&__btns {
-		display: flex;
-	}
-	&__btn {
-		display: flex;
-		justify-content: center;
-		background-color: transparent;
-		border: none;
-		align-items: center;
-		width: auto;
-		height: auto;
-		font-size: 50px;
-		margin-bottom: 10px;
+	&__submit-btn {
+		margin-top: 10px;
 	}
 	&__input {
-		margin: 0 10px 0 3px;
-		width: 50px;
+		font-size: 18px !important;
 	}
+	&__accept {
+		margin-top: 10px !important;
+		align-self: center;
+	}
+}
+.label__skills {
+	align-items: flex-start;
+	justify-content: flex-start;
+	flex-direction: column;
 }
