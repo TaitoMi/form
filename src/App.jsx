@@ -11,16 +11,9 @@ class App extends React.Component {
     };
   }
 
-  incrementSkills = event => {
-    event.preventDefault();
-    const { skills } = this.state;
-    const newSkills = [...skills, skills.length];
-    this.setState({ skills: newSkills });
-  };
-
   render() {
     const { skills } = this.state;
-    return <Form skills={skills} incSkills={this.incrementSkills} />;
+    return <Form skills={skills} />;
   }
 }
 
