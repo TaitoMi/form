@@ -23,7 +23,6 @@
 	&__label {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
 		width: 150px;
 	}
 	&__skills {
@@ -44,15 +43,16 @@
 		margin-top: 10px !important;
 		align-self: center;
 	}
-}
-.label__skills {
-	align-items: flex-start;
-	justify-content: flex-start;
-	flex-direction: column;
+	&__required {
+		font-size: 25px;
+		color: red;
+	}
 }
 
 .has-error {
+	z-index: 1;
 	border: 1px solid red !important;
+	border-radius: 5px;
 }
 
 .input__error {

@@ -1,26 +1,37 @@
 import React from 'react';
 import { Input, Button, Checkbox } from 'antd';
 import 'antd/dist/antd.css';
-import { Formik } from 'formik';
+import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
     .required('Обязательное поле')
     .max(50, 'Не более 50 символов'),
-  age: Yup.number()
-    .required('Обязательное поле')
-    .min(18, 'Не младше 18 лет')
-    .max(65, 'Не старше 65'),
+  password: Yup.string()
+    .matches(
+      /(?=.*[0-9])(?=.*[A-Z])[0-9a-zA-Z]/,
+      'Пароль должен содержать латинские буквы, одну заглавную и цифру'
+    )
+    .min(8, 'Не меньше 8')
+    .max(40, 'Не больше 40')
+    .required(),
+  repeatedPassword: Yup.string()
+    .oneOf([Yup.ref('password')], 'Пароли не совпадают')
+    .required('Обязательное поле'),
   email: Yup.string()
     .required('Обязательное поле')
     .email('Неправильный email адрес'),
   website: Yup.string().url('Неправильная ссылка'),
-  accept: Yup.bool().required('Обязательное поле'),
+  age: Yup.number()
+    .required('Обязательное поле')
+    .min(18, 'Не младше 18 лет')
+    .max(65, 'Не старше 65'),
+  accept: Yup.bool('asdasd').required('Обязательное поле'),
 });
 
-const Form = ({ skills }) => {
+const Form = () => {
   return (
     <Formik
       initialValues={{
@@ -29,15 +40,20 @@ const Form = ({ skills }) => {
         repeatedPassword: '',
         email: '',
         website: '',
+        skills: [''],
       }}
       validationSchema={validationSchema}
+      onSubmit={values => {
+        console.log('work');
+        alert(JSON.stringify(values, null, 2));
+      }}
     >
       {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
         <form className="form" onSubmit={handleSubmit}>
-          <>{skills}</>
+          <>{JSON.stringify(values, null, 2)}</>
           <div className="form__row">
             <span htmlFor="name" className="form__label">
-              Имя:
+              Имя<span className="form__required">*</span>:
             </span>
             <Input
               placeholder="Введите имя"
@@ -52,9 +68,9 @@ const Form = ({ skills }) => {
           {touched.name && errors.name ? <div className="input__error">{errors.name}</div> : null}
           <div className="form__row">
             <span htmlFor="password" className="form__label">
-              Пароль:
+              Пароль<span className="form__required">*</span>:
             </span>
-            <Input
+            <Input.Password
               placeholder="Введите пароль"
               onChange={handleChange}
               id="password"
@@ -69,9 +85,9 @@ const Form = ({ skills }) => {
           ) : null}
           <div className="form__row">
             <span htmlFor="repeatedPassword" className="form__label">
-              Еще раз:
+              Еще раз<span className="form__required">*</span>:
             </span>
-            <Input
+            <Input.Password
               placeholder="Повторите пароль"
               onChange={handleChange}
               id="repeatedPassword"
@@ -88,7 +104,7 @@ const Form = ({ skills }) => {
           ) : null}
           <div className="form__row">
             <span htmlFor="email" className="form__label">
-              Email:
+              Email<span className="form__required">*</span>:
             </span>
             <Input
               id="email"
@@ -122,7 +138,7 @@ const Form = ({ skills }) => {
           ) : null}
           <div className="form__row">
             <span htmlFor="age" className="form__label">
-              Возраст:
+              Возраст<span className="form__required">*</span>:
             </span>
             <Input
               placeholder="Укажите возраст"
@@ -135,23 +151,31 @@ const Form = ({ skills }) => {
             />
           </div>
           {touched.age && errors.age ? <div className="input__error">{errors.age}</div> : null}
-          <div className="form__row">
-            <span htmlFor="age" className="form__label label__skills">
-              Навыки:
-            </span>
-            <div className="form__skills">
-              <Input
-                placeholder="Укажите навык"
-                onChange={handleChange}
-                id="skills"
-                value={values.skills}
-                className="form__input"
-              />
-              <Button htmlType="button" type="dashed">
-                Добавить навык
-              </Button>
-            </div>
-          </div>
+          <FieldArray
+            name="skills"
+            render={arrayHelpers => (
+              <div>
+                {values.skills.map((skill, index) => {
+                  const newIndex = `skills-${index}`;
+                  return (
+                    <div key={newIndex} className="form__row">
+                      <Input
+                        placeholder="Введите навык"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.skills[index]}
+                        id={`skills${index}`}
+                        name={`skills.${index}`}
+                      />
+                    </div>
+                  );
+                })}
+                <Button type="button" onClick={() => arrayHelpers.push('')}>
+                  Добавить навык
+                </Button>
+              </div>
+            )}
+          />
           <Checkbox
             onChange={handleChange}
             onBlur={handleBlur}
@@ -160,8 +184,11 @@ const Form = ({ skills }) => {
             id="accept"
             className="form__accept"
           >
-            Я принимаю условия
+            Я принимаю условия<span className="form__required">*</span>
           </Checkbox>
+          {touched.accept && errors.accept ? (
+            <div className="input__error">{errors.accept}</div>
+          ) : null}
           <Button className="form__submit-btn" htmlType="submit" type="primary">
             Зарегистрироваться
           </Button>
@@ -171,12 +198,12 @@ const Form = ({ skills }) => {
   );
 };
 
-Form.defaultProps = {
-  skills: [0],
-};
+// Form.defaultProps = {
+//   skills: [0],
+// };
 
-Form.propTypes = {
-  skills: PropTypes.arrayOf(PropTypes.number),
-};
+// Form.propTypes = {
+//   skills: PropTypes.arrayOf(PropTypes.number),
+// };
 
 export default Form;
