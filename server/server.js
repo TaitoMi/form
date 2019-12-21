@@ -1,19 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 5000;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
-app.get('/api/hello', (req, res) => {
-	res.send({ express: 'Hello From Express' });
+app.post('/', (req, res) => {
+  console.log(req, 'asdasd');
+  res.send('12312312321');
 });
 
-app.post('/api/world', (req, res) => {
-	console.log(req.body);
-	res.send(`post request ${req.body.post}`);
-});
-
-app.listen(port, () => console.log(`Listening on port ${port}`));
+app.listen(port, () => console.log('worked??????????'));

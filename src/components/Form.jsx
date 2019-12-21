@@ -3,11 +3,26 @@ import { Input, Button, Checkbox } from 'antd';
 import 'antd/dist/antd.css';
 import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
-// import PropTypes from 'prop-types';
+
+const getResponse = async data => {
+  const response = await fetch('http://localhost:5000', {
+    method: 'POST',
+    headers: {
+      // Origin: 'http://localhost:3000',
+    },
+    body: data,
+  });
+  const result = await response.json();
+  console.log(result, 123123);
+};
+
+// getResponse('sasasa');
+
+const isRequired = 'Обязательное поле';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
-    .required('Обязательное поле')
+    .required(isRequired)
     .max(50, 'Не более 50 символов'),
   password: Yup.string()
     .matches(
@@ -16,19 +31,19 @@ const validationSchema = Yup.object().shape({
     )
     .min(8, 'Не меньше 8')
     .max(40, 'Не больше 40')
-    .required(),
+    .required(isRequired),
   repeatedPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Пароли не совпадают')
-    .required('Обязательное поле'),
+    .required(isRequired),
   email: Yup.string()
-    .required('Обязательное поле')
+    .required(isRequired)
     .email('Неправильный email адрес'),
   website: Yup.string().url('Неправильная ссылка'),
   age: Yup.number()
-    .required('Обязательное поле')
+    .required(isRequired)
     .min(18, 'Не младше 18 лет')
     .max(65, 'Не старше 65'),
-  accept: Yup.bool('asdasd').required('Обязательное поле'),
+  accept: Yup.bool().required(isRequired),
 });
 
 const Form = () => {
@@ -43,12 +58,17 @@ const Form = () => {
         skills: [''],
       }}
       validationSchema={validationSchema}
-      onSubmit={values => {
-        console.log('work');
-        alert(JSON.stringify(values, null, 2));
+      onSubmit={(values, { setSubmitting, resetForm }) => {
+        setSubmitting(true);
+        const newValues = values;
+        newValues.skills = newValues.skills.filter(el => el !== '');
+        if (1 < 0) {
+          resetForm();
+        }
+        getResponse(JSON.stringify(newValues, null, 2));
       }}
     >
-      {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+      {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
         <form className="form" onSubmit={handleSubmit}>
           <>{JSON.stringify(values, null, 2)}</>
           <div className="form__row">
@@ -189,7 +209,12 @@ const Form = () => {
           {touched.accept && errors.accept ? (
             <div className="input__error">{errors.accept}</div>
           ) : null}
-          <Button className="form__submit-btn" htmlType="submit" type="primary">
+          <Button
+            loading={isSubmitting}
+            className="form__submit-btn"
+            htmlType="submit"
+            type="primary"
+          >
             Зарегистрироваться
           </Button>
         </form>
@@ -197,13 +222,5 @@ const Form = () => {
     </Formik>
   );
 };
-
-// Form.defaultProps = {
-//   skills: [0],
-// };
-
-// Form.propTypes = {
-//   skills: PropTypes.arrayOf(PropTypes.number),
-// };
 
 export default Form;
