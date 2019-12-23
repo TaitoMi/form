@@ -10,12 +10,9 @@ const validationSchema = Yup.object().shape({
     .required(isRequired)
     .max(50, 'Не более 50 символов'),
   password: Yup.string()
-    .matches(
-      /[0-9a-zA-Z]/,
-      'Пароль должен содержать латинские буквы'
-		)
-		.matches(/(?=.*[A-Z])/, 'Парольно должен содержать заглавную букву')
-		.matches(/(?=.*[0-9])/, 'Парольно должен содержать одну цифру')
+    .matches(/[0-9a-zA-Z]/, 'Пароль должен содержать латинские буквы')
+    .matches(/(?=.*[A-Z])/, 'Парольно должен содержать заглавную букву')
+    .matches(/(?=.*[0-9])/, 'Парольно должен содержать одну цифру')
     .min(8, 'Не меньше 8')
     .max(40, 'Не больше 40')
     .required(isRequired),
@@ -38,38 +35,51 @@ const port = 5000;
 
 const registeredUsers = new Map();
 
-const addUser = (user) => {
-	const correctlyUser = user;
-	delete correctlyUser.accept;
-	registeredUsers.set(user.email, correctlyUser);
-}
+const addUser = user => {
+  const correctlyUser = user;
+  delete correctlyUser.accept;
+  registeredUsers.set(user.email, correctlyUser);
+};
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
 app.post('/sign-up', (req, res) => {
-	const body = req.body;
-	let checkValid = false;
-	validationSchema.isValid(body).then(valid => { checkValid = valid });
-	console.log(checkValid);
-	if (!checkValid) {
-		validationSchema.validate(body).catch((err) => {
-			res.send(JSON.stringify({ err: err.message, elem: err.params.path }, null, 2));
-			res.status(400).end();
-			console.log(err);
-			return;
-		});
-	}
-	// Ответ сервера
-	if (registeredUsers.has(body.email)) {
-		res.status(401).send('Пользователь с таким email уже существует');
-		return
-	} else {
-		addUser(body);
-		res.status(200).send('Вы успешно зарегистрировались');
-		return
-	}
+  const { body } = req;
+  const resObj = {
+    message: '',
+    errorElem: null,
+  };
+  validationSchema
+    .isValid(body)
+    .then(valid => {
+      if (!valid) {
+        validationSchema.validate(body).catch(err => {
+          resObj.message = err.message;
+          resObj.errorElem = err.params.path;
+          res.send(resObj);
+          res.end();
+        });
+        return false;
+      }
+      return true;
+    })
+    .then(check => {
+      if (!check) {
+        return;
+      }
+      if (registeredUsers.has(body.email)) {
+        console.log('already registered');
+        res.send({ message: 'Пользователь с таким email уже существует' });
+        return;
+      }
+      console.log('Succesfully registered');
+      addUser(body);
+      console.log(resObj);
+      res.send({ message: 'Вы успешно зарегистрировались' });
+    });
+  // Ответ сервера
 });
 
 app.listen(port, () => console.log('worked??????????'));

@@ -41,6 +41,8 @@ class Form extends React.Component {
       email: null,
       website: null,
       age: null,
+      accept: null,
+      successful: null,
     };
   }
 
@@ -54,11 +56,35 @@ class Form extends React.Component {
       body: JSON.stringify(data, null, 2),
     });
     const result = await response.json();
-    console.log(result);
+    return result;
+  };
+
+  errorPointer = (elem, message) => {
+    const newState = {
+      name: null,
+      password: null,
+      repeatedPassword: null,
+      email: null,
+      website: null,
+      age: null,
+      accept: null,
+    };
+    newState[elem] = message;
+    this.setState({ ...newState });
   };
 
   render() {
-    const { name, password, repeatedPassword, email, website, age } = this.state;
+    const {
+      name,
+      password,
+      repeatedPassword,
+      email,
+      website,
+      age,
+      accept,
+      successful,
+    } = this.state;
+
     return (
       <Formik
         initialValues={{
@@ -71,19 +97,24 @@ class Form extends React.Component {
           accept: false,
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { setSubmitting }) => {
           setSubmitting(true);
-          if (1 < 0) {
-            resetForm();
-          }
           const newValues = values;
           newValues.skills = newValues.skills.filter(el => el !== '');
-          this.getResponse(newValues);
+          this.getResponse(newValues).then(({ errorElem, message }) => {
+            if (errorElem) {
+              this.errorPointer(errorElem, message);
+              setSubmitting(false);
+              return;
+            }
+            setSubmitting(false);
+            this.errorPointer('name', null);
+            this.setState({ successful: message });
+          });
         }}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
           <form className="form" onSubmit={handleSubmit}>
-            <>{JSON.stringify(values, null, 2)}</>
             <div className="form__row">
               <span htmlFor="name" className="form__label">
                 Имя<span className="form__required">*</span>:
@@ -100,7 +131,9 @@ class Form extends React.Component {
                 }`}
               />
             </div>
-            {touched.name && errors.name ? <div className="input__error">{errors.name}</div> : null}
+            {(touched.name && errors.name) || name ? (
+              <div className="input__error">{errors.name || name}</div>
+            ) : null}
             <div className="form__row">
               <span htmlFor="password" className="form__label">
                 Пароль<span className="form__required">*</span>:
@@ -117,8 +150,8 @@ class Form extends React.Component {
                 }`}
               />
             </div>
-            {touched.password && errors.password ? (
-              <div className="input__error">{errors.password}</div>
+            {(touched.password && errors.password) || password ? (
+              <div className="input__error">{errors.password || password}</div>
             ) : null}
             <div className="form__row">
               <span htmlFor="repeatedPassword" className="form__label">
@@ -138,8 +171,8 @@ class Form extends React.Component {
                 }`}
               />
             </div>
-            {touched.repeatedPassword && errors.repeatedPassword ? (
-              <div className="input__error">{errors.repeatedPassword}</div>
+            {(touched.repeatedPassword && errors.repeatedPassword) || repeatedPassword ? (
+              <div className="input__error">{errors.repeatedPassword || repeatedPassword}</div>
             ) : null}
             <div className="form__row">
               <span htmlFor="email" className="form__label">
@@ -157,8 +190,8 @@ class Form extends React.Component {
                 }`}
               />
             </div>
-            {touched.email && errors.email ? (
-              <div className="input__error">{errors.email}</div>
+            {(touched.email && errors.email) || email ? (
+              <div className="input__error">{errors.email || email}</div>
             ) : null}
             <div className="form__row">
               <span htmlFor="website" className="form__label">
@@ -176,8 +209,8 @@ class Form extends React.Component {
                 }`}
               />
             </div>
-            {touched.website && errors.website ? (
-              <div className="input__error">{errors.website}</div>
+            {(touched.website && errors.website) || website ? (
+              <div className="input__error">{errors.website || website}</div>
             ) : null}
             <div className="form__row">
               <span htmlFor="age" className="form__label">
@@ -193,7 +226,9 @@ class Form extends React.Component {
                 className={`form__input ${(touched.age && errors.age) || age ? 'has-error' : null}`}
               />
             </div>
-            {touched.age && errors.age ? <div className="input__error">{errors.age}</div> : null}
+            {(touched.age && errors.age) || age ? (
+              <div className="input__error">{errors.age || age}</div>
+            ) : null}
             <FieldArray
               name="skills"
               render={arrayHelpers => (
@@ -229,9 +264,10 @@ class Form extends React.Component {
             >
               Я принимаю условия<span className="form__required">*</span>
             </Checkbox>
-            {touched.accept && errors.accept ? (
-              <div className="input__error">{errors.accept}</div>
+            {(touched.accept && errors.accept) || accept ? (
+              <div className="input__error">{errors.accept || accept}</div>
             ) : null}
+            <div>{successful}</div>
             <Button
               loading={isSubmitting}
               className="form__submit-btn"
