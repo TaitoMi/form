@@ -58,7 +58,7 @@ app.post('/sign-up', (req, res) => {
         validationSchema.validate(body).catch(err => {
           resObj.message = err.message;
           resObj.errorElem = err.params.path;
-          res.send(resObj);
+          res.status(400).send(resObj);
           res.end();
         });
         return false;
@@ -71,13 +71,13 @@ app.post('/sign-up', (req, res) => {
       }
       if (registeredUsers.has(body.email)) {
         console.log('already registered');
-        res.send({ message: 'Пользователь с таким email уже существует' });
+        res.status(400).send({ message: 'Пользователь с таким email уже существует' });
         return;
       }
       console.log('Succesfully registered');
       addUser(body);
       console.log(resObj);
-      res.send({ message: 'Вы успешно зарегистрировались' });
+      res.status(200).send({ message: 'Вы успешно зарегистрировались' });
     });
   // Ответ сервера
 });

@@ -3,6 +3,8 @@ import { Input, Button, Checkbox } from 'antd';
 import 'antd/dist/antd.css';
 import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
+import Field from './Field';
+import FieldPassword from './FieldPassword';
 
 const isRequired = 'Обязательное поле';
 
@@ -14,8 +16,8 @@ const validationSchema = Yup.object().shape({
     .matches(/[0-9a-zA-Z]/, 'Пароль должен содержать латинские буквы')
     .matches(/(?=.*[A-Z])/, 'Парольно должен содержать заглавную букву')
     .matches(/(?=.*[0-9])/, 'Парольно должен содержать одну цифру')
-    .min(8, 'Не меньше 8')
-    .max(40, 'Не больше 40')
+    .min(8, 'Не меньше 8 символов')
+    .max(40, 'Не больше 40 символов')
     .required(isRequired),
   repeatedPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Пароли не совпадают')
@@ -115,120 +117,66 @@ class Form extends React.Component {
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
           <form className="form" onSubmit={handleSubmit}>
-            <div className="form__row">
-              <span htmlFor="name" className="form__label">
-                Имя<span className="form__required">*</span>:
-              </span>
-              <Input
-                placeholder="Введите имя"
-                onChange={handleChange}
-                id="name"
-                name="name"
-                onBlur={handleBlur}
-                value={values.name}
-                className={`form__input ${
-                  (touched.name && errors.name) || name ? 'has-error' : null
-                }`}
-              />
-            </div>
-            {(touched.name && errors.name) || name ? (
-              <div className="input__error">{errors.name || name}</div>
-            ) : null}
-            <div className="form__row">
-              <span htmlFor="password" className="form__label">
-                Пароль<span className="form__required">*</span>:
-              </span>
-              <Input.Password
-                placeholder="Введите пароль"
-                onChange={handleChange}
-                id="password"
-                name="password"
-                onBlur={handleBlur}
-                value={values.password}
-                className={`form__input ${
-                  (touched.password && errors.password) || password ? 'has-error' : null
-                }`}
-              />
-            </div>
-            {(touched.password && errors.password) || password ? (
-              <div className="input__error">{errors.password || password}</div>
-            ) : null}
-            <div className="form__row">
-              <span htmlFor="repeatedPassword" className="form__label">
-                Еще раз<span className="form__required">*</span>:
-              </span>
-              <Input.Password
-                placeholder="Повторите пароль"
-                onChange={handleChange}
-                id="repeatedPassword"
-                name="repeatedPassword"
-                onBlur={handleBlur}
-                value={values.repeatedPassword}
-                className={`form__input ${
-                  (touched.repeatedPassword && errors.repeatedPassword) || repeatedPassword
-                    ? 'has-error'
-                    : null
-                }`}
-              />
-            </div>
-            {(touched.repeatedPassword && errors.repeatedPassword) || repeatedPassword ? (
-              <div className="input__error">{errors.repeatedPassword || repeatedPassword}</div>
-            ) : null}
-            <div className="form__row">
-              <span htmlFor="email" className="form__label">
-                Email<span className="form__required">*</span>:
-              </span>
-              <Input
-                id="email"
-                name="email"
-                placeholder="Введите email"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.email}
-                className={`form__input ${
-                  (touched.email && errors.email) || email ? 'has-error' : null
-                }`}
-              />
-            </div>
-            {(touched.email && errors.email) || email ? (
-              <div className="input__error">{errors.email || email}</div>
-            ) : null}
-            <div className="form__row">
-              <span htmlFor="website" className="form__label">
-                Website:
-              </span>
-              <Input
-                placeholder="Введите website"
-                onChange={handleChange}
-                id="website"
-                name="website"
-                onBlur={handleBlur}
-                value={values.website}
-                className={`form__input ${
-                  (touched.website && errors.website) || website ? 'has-error' : null
-                }`}
-              />
-            </div>
-            {(touched.website && errors.website) || website ? (
-              <div className="input__error">{errors.website || website}</div>
-            ) : null}
-            <div className="form__row">
-              <span htmlFor="age" className="form__label">
-                Возраст<span className="form__required">*</span>:
-              </span>
-              <Input
-                placeholder="Укажите возраст"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.age}
-                id="age"
-                name="age"
-                className={`form__input ${(touched.age && errors.age) || age ? 'has-error' : null}`}
-              />
-            </div>
-            {(touched.age && errors.age) || age ? (
-              <div className="input__error">{errors.age || age}</div>
-            ) : null}
+            <Field
+              label="Имя"
+              change={handleChange}
+              blur={handleBlur}
+              idName="name"
+              value={values.name}
+              touched={touched.name}
+              errors={errors.name}
+              elem={name}
+            />
+            <FieldPassword
+              label="Введите Пароль"
+              change={handleChange}
+              blur={handleBlur}
+              idName="password"
+              value={values.password}
+              touched={touched.password}
+              errors={errors.password}
+              elem={password}
+            />
+            <FieldPassword
+              label="Повторите пароль"
+              change={handleChange}
+              blur={handleBlur}
+              idName="repeatedPassword"
+              value={values.repeatedPassword}
+              touched={touched.repeatedPassword}
+              errors={errors.repeatedPassword}
+              elem={repeatedPassword}
+            />
+            <Field
+              label="Введите email"
+              change={handleChange}
+              blur={handleBlur}
+              idName="email"
+              value={values.email}
+              touched={touched.email}
+              errors={errors.email}
+              elem={email}
+            />
+            <Field
+              label="Введите website"
+              change={handleChange}
+              blur={handleBlur}
+              idName="website"
+              value={values.website}
+              touched={touched.website}
+              errors={errors.website}
+              elem={website}
+            />
+            <Field
+              label="Введите возраст"
+              change={handleChange}
+              blur={handleBlur}
+              idName="age"
+              value={values.age}
+              touched={touched.age}
+              errors={errors.age}
+              elem={age}
+            />
             <FieldArray
               name="skills"
               render={arrayHelpers => (
